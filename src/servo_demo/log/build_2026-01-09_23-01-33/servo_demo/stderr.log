@@ -1,0 +1,3 @@
+gmake[2]: *** [CMakeFiles/servo_cpp_interface_demo.dir/build.make:76: CMakeFiles/servo_cpp_interface_demo.dir/src/servo_cpp_interface_demo.cpp.o] Interrupt
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/servo_cpp_interface_demo.dir/all] Interrupt
+gmake: *** [Makefile:146: all] Interrupt
