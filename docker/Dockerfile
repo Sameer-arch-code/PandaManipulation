@@ -5,6 +5,7 @@ RUN apt update && \
     apt install ros-humble-example-interfaces && \
     apt install ros-humble-rmw-cyclonedds-cpp -y && \
     apt install ros-humble-imu-filter-madgwick && \
+    apt install ros-humble-imu-transformer && \
     echo "source /root/ws_moveit/install/setup.bash" >> /etc/bash.bashrc && \
     rm -rf /var/lib/apt/lists/*
 

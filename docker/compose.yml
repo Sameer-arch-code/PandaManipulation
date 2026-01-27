@@ -29,4 +29,19 @@ services:
       ROS_DOMAIN_ID: 9
       RMW_IMPLEMENTATION: rmw_cyclonedds_cpp
 
-    command: ["tail", "-f", "/dev/null"]
+    command:
+    - sh
+    - -c
+    - |
+        ros2 run imu_filter_madgwick imu_filter_madgwick_node \
+          --ros-args \
+          -p use_mag:=false \
+          -p publish_tf:=true \
+          -p remove_gravity_vector:=true &
+        ros2 run imu_transformer imu_transformer_node \
+          --ros-args \
+          -p target_frame:=world \
+          -r imu_in:=/imu/data &
+        wait
+
+
