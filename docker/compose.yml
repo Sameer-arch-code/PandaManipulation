@@ -30,18 +30,31 @@ services:
       RMW_IMPLEMENTATION: rmw_cyclonedds_cpp
 
     command:
-    - sh
+    - /bin/bash
     - -c
     - |
+        set -e
+
+        # Build first (foreground)
+        colcon build --packages-select sensor_massage
+
+        # Source environment
+        source install/setup.bash
+
+        # Start nodes
         ros2 run imu_filter_madgwick imu_filter_madgwick_node \
           --ros-args \
           -p use_mag:=false \
           -p publish_tf:=true \
           -p remove_gravity_vector:=true &
+
+        ros2 run sensor_massage massage_sensor &
+
         ros2 run imu_transformer imu_transformer_node \
           --ros-args \
           -p target_frame:=world \
           -r imu_in:=/imu/data &
+
         wait
 
 
