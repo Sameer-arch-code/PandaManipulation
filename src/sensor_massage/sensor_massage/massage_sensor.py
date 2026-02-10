@@ -25,11 +25,13 @@ class SensorFuser(Node):
 
         # 3. Publisher for Madgwick Filter
         self.imu_pub = self.create_publisher(Imu, '/imu/data_raw', 10)
+        self.mag_pub = self.create_publisher(MagneticField, '/imu/mag', 10)
         
         self.get_logger().info('Sensor Fuser Node started. Combining 3 topics into /imu/data_raw')
 
     def common_callback(self, accel_msg, gyro_msg, mag_msg):
         imu_msg = Imu()
+        mag_msg_p = MagneticField()
         
         # Use current time if the incoming message has zero timestamp
         if accel_msg.header.stamp.sec == 0 and accel_msg.header.stamp.nanosec == 0:
@@ -48,10 +50,14 @@ class SensorFuser(Node):
         imu_msg.angular_velocity.y = gyro_msg.twist.angular.y
         imu_msg.angular_velocity.z = gyro_msg.twist.angular.z
 
-        # Note: The Magnetometer data is usually handled by the filter 
-        # on its own topic (/imu/mag), but we combine Accel/Gyro here for /imu/data_raw
+        # Update and publish magnetometer data
+        mag_msg_p.header.stamp = imu_msg.header.stamp
+        mag_msg_p.header.frame_id = 'imu_link'
+        mag_msg_p.magnetic_field = mag_msg.magnetic_field
+        mag_msg_p.magnetic_field_covariance = mag_msg.magnetic_field_covariance
         
         self.imu_pub.publish(imu_msg)
+        self.mag_pub.publish(mag_msg_p)
 
 def main(args=None):
     rclpy.init(args=args)

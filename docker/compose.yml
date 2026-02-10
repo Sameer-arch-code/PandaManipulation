@@ -44,15 +44,17 @@ services:
         # Start nodes
         ros2 run imu_filter_madgwick imu_filter_madgwick_node \
           --ros-args \
-          -p use_mag:=false \
+          -p use_mag:=true \
           -p publish_tf:=true \
           -p remove_gravity_vector:=true &
 
         ros2 run sensor_massage massage_sensor &
 
+        sleep 2  # Wait for madgwick to warm up and start publishing /tf
+
         ros2 run imu_transformer imu_transformer_node \
           --ros-args \
-          -p target_frame:=world \
+          -p target_frame:=odom \
           -r imu_in:=/imu/data &
 
         wait
